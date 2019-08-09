@@ -1,0 +1,77 @@
+div.carousel {
+    position: relative;
+    overflow: hidden;
+}
+
+div.carousel > div.carousel-box {
+    position: absolute;
+
+    height: 100%;
+    top: 0;
+}
+
+div.carousel > div.carousel-box > img {
+    width: 480px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+}
+
+/* btns */
+div.carousel > div.carousel-btns {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div.carousel > div.carousel-btns > div.default-btn {
+    width: 30px;
+    height: 60px;
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    line-height: 60px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.5);
+
+    cursor: pointer;
+}
+
+div.carousel > div.carousel-btns > div.default-btn:first-child {
+    left: 20px;
+}
+
+div.carousel > div.carousel-btns > div.default-btn:last-child {
+    right: 20px
+}
+
+/* circles */
+div.carousel > div.carousel-circles {
+    height: 10px;
+
+    position: absolute;
+    display: flex;
+    justify-content: space-between;
+
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+div.carousel > div.carousel-circles > div.default-circle {
+    width: 10px;
+    height: 10px;
+
+    background-color: white;
+
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+div.carousel > div.carousel-circles > div.default-circle:first-child {
+    background-color: yellow;
+}

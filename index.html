@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-cn">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title></title>
+        <link rel="stylesheet" href="./css/common.css" type="text/css">
+        <link rel="stylesheet" href="./css/carousel.css" type="text/css">
+        <style>
+            div.carousel {
+                width: 480px;
+                height: 270px;
+                margin: 100px auto 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="carousel">
+            <div class="carousel-box">
+                <img src="./image/1.jpg" alt="">
+                <img src="./image/2.jpg" alt="">
+                <img src="./image/3.jpg" alt="">
+                <img src="./image/4.jpg" alt="">
+                <img src="./image/5.jpg" alt="">
+            </div>
+            <div class="carousel-btns">
+                <div class="default-btn"></div>
+                <div class="default-btn"></div>
+            </div>
+            <div class="carousel-circles">
+                <div class="default-circle"></div>
+                <div class="default-circle"></div>
+                <div class="default-circle"></div>
+                <div class="default-circle"></div>
+                <div class="default-circle"></div>
+            </div>
+        </div>
+
+        <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+        <script src="./js/carousel.js" type="text/javascript"></script>
+        <script type="text/javascript">
+            let carousel = new Carousel("div.carousel");
+            carousel.initCarousel();
+            carousel.autoplay(500, 1000);
+            carousel.initBtns(1000);
+            carousel.initCirs(1000);
+        </script>
+    </body>
+</html>
