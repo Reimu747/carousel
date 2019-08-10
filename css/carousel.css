@@ -26,7 +26,7 @@ div.carousel > div.carousel-btns {
     left: 0;
 }
 
-div.carousel > div.carousel-btns > div.default-btn {
+div.carousel > div.default-btns > div {
     width: 30px;
     height: 60px;
 
@@ -41,16 +41,17 @@ div.carousel > div.carousel-btns > div.default-btn {
     cursor: pointer;
 }
 
-div.carousel > div.carousel-btns > div.default-btn:first-child {
+div.carousel > div.default-btns > div:first-child {
     left: 20px;
 }
 
-div.carousel > div.carousel-btns > div.default-btn:last-child {
-    right: 20px
+div.carousel > div.default-btns > div:last-child {
+    right: 20px;
 }
 
 /* circles */
-div.carousel > div.carousel-circles {
+div.carousel > div.default-circles {
+    width: 90px;
     height: 10px;
 
     position: absolute;
@@ -62,7 +63,7 @@ div.carousel > div.carousel-circles {
     transform: translateX(-50%);
 }
 
-div.carousel > div.carousel-circles > div.default-circle {
+div.carousel > div.default-circles > div {
     width: 10px;
     height: 10px;
 
@@ -72,6 +73,6 @@ div.carousel > div.carousel-circles > div.default-circle {
     cursor: pointer;
 }
 
-div.carousel > div.carousel-circles > div.default-circle:first-child {
+div.carousel > div.default-circles > div:first-child {
     background-color: yellow;
 }
