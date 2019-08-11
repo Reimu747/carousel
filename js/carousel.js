@@ -1,5 +1,5 @@
 /**
- *
+ * 滚动轮播图
  * @param str carousel容器选择器，通过此选择器应定位唯一的carousel元素
  */
 function Carousel(str) {
@@ -38,12 +38,9 @@ function Carousel(str) {
         this.$imgs.each(function () {
             $(this).css("left", ($(this).index() + 1) * parseInt(CAROUSEL_WIDTH));
         });
-        // 设置圆点样式
-        // this.$circles.css({
-        //     width: (this.$imgs.length * 2 - 1) * 10,
-        // });
-        this.cirsOldStyle = cirOldStyle;
-        this.cirsNewStyle = cirNewStyle;
+        // 导入圆点样式
+        this.cirsOldStyle = cirOldStyle === undefined ? "default-cir" : cirOldStyle;
+        this.cirsNewStyle = cirNewStyle === undefined ? "default-highlight-cir" : cirNewStyle;
 
         // 在图片前后添加猫腻图，并重新设置变量
         this.$carouselBox.prepend(this.$imgs.eq(this.$imgs.length - 1).clone().css("left", 0));
@@ -201,8 +198,131 @@ function Carousel(str) {
      */
     this.resetCirs = function (oldStyle, newStyle, index) {
         this.$circles.find("div").each(function () {
-            $(this).css(oldStyle);
+            $(this).removeClass(newStyle);
+            $(this).addClass(oldStyle);
         });
-        this.$circles.find("div").eq(index).css(newStyle);
+        this.$circles.find("div").eq(index).removeClass(oldStyle);
+        this.$circles.find("div").eq(index).addClass(newStyle);
     };
+}
+
+/**
+ * 呼吸轮播图
+ * @param str carousel容器选择器，通过此选择器应定位唯一的carousel元素
+ */
+function CarouselBreath(str) {
+    let carousel = new Carousel(str);
+    // 当前显示的图片索引
+    carousel.idx = 0;
+    // 锁，为false时禁止进行轮播动画
+    carousel.lock = true;
+    // carousel宽度、高度
+    const CAROUSEL_WIDTH = parseInt(carousel.$carousel.css("width"));
+    const CAROUSEL_HEIGHT = parseInt(carousel.$carousel.css("height"));
+    // 图片数量
+    const LENGTH = carousel.$imgs.length;
+    /**
+     * 重设carousel初始化器
+     * @param cirOldStyle 默认圆点样式
+     * @param cirNewStyle 高亮原点样式
+     */
+    carousel.initCarousel = function (cirOldStyle, cirNewStyle) {
+        // carousel box布局
+        // 宽度为一张图片的宽度，左偏移量为0
+        this.$carouselBox.css({
+            width: CAROUSEL_WIDTH,
+            left: 0,
+        });
+        // 图片布局
+        // 所有图片左偏移量为0，除第一张图片外，其余图片的display值设为none
+        this.$imgs.each(function () {
+            $(this).css("left", 0);
+            if ($(this).index() !== 0) {
+                $(this).css("display", "none");
+            }
+        });
+        // 导入圆点样式
+        this.cirsOldStyle = cirOldStyle === undefined ? "default-cir" : cirOldStyle;
+        this.cirsNewStyle = cirNewStyle === undefined ? "default-highlight-cir" : cirNewStyle;
+    };
+    /**
+     * 重设carousel移动方法
+     * @param speed 动画持续时间
+     * @param index 要显示的图片索引
+     * @param fn 动画完成后的回调函数
+     */
+    carousel.move = function (speed, index, fn) {
+        if (speed === undefined) {
+            speed = 1000;
+        }
+        if (index === undefined) {
+            index = this.idx === LENGTH - 1 ? this.idx + 1 : 0;
+        }
+
+        if (this.lock) {
+            this.lock = false;
+            this.$imgs.eq(this.idx).fadeOut(speed / 2, function () {
+                carousel.$imgs.eq(index).fadeIn(speed / 2, function () {
+                    // 开锁，重设当前图片索引
+                    carousel.lock = true;
+                    carousel.idx = index;
+                    fn();
+                });
+            });
+        }
+    };
+    /**
+     * 重设carousel单次移动方法
+     * @param dire 移动方向，left向左移动，right向右移动
+     * @param speed 动画持续时间
+     */
+    carousel.moveOnce = function (dire, speed) {
+        if (dire === undefined) {
+            dire = "left";
+        }
+        if (speed === undefined) {
+            speed = 1000;
+        }
+
+        // 设置将要展示的图片索引
+        let index = this.idx;
+        if (dire.toLowerCase() === "left") {
+            index = index === LENGTH - 1 ? 0 : index + 1;
+        } else if (dire.toLowerCase() === "right") {
+            index = index === 0 ? LENGTH - 1 : index - 1;
+        } else {
+            throw new Error("dire值错误!");
+        }
+
+        this.move(speed, index, function () {
+            // 动画完成后，重设圆点样式
+            carousel.resetCirs(carousel.cirsOldStyle, carousel.cirsNewStyle, index);
+        });
+    };
+    /**
+     * 重设点击圆点事件
+     * @param speed 动画持续时间
+     */
+    carousel.initCirs = function (speed) {
+        if (this.$circles.length === 0) {
+            return;
+        }
+        if (speed === undefined) {
+            speed = 1000;
+        }
+
+        this.$circles.find("div").each(function () {
+            $(this).click(function () {
+                if (carousel.lock) {
+                    let index = $(this).index();
+                    // 点击圆点后轮播，并重设圆点样式
+                    let move = function () {
+                        carousel.resetCirs(carousel.cirsOldStyle, carousel.cirsNewStyle, index);
+                    };
+                    carousel.move(speed, index, move);
+                }
+            });
+        });
+    };
+    return carousel;
 }
