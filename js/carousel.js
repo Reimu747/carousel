@@ -88,6 +88,10 @@ function Carousel(str) {
         if (deltaX === undefined) {
             deltaX = CAROUSEL_WIDTH;
         }
+        if (fn === undefined) {
+            fn = function () {
+            };
+        }
 
         if (!this.$carouselBox.is(":animated")) {
             this.$carouselBox.animate({
@@ -205,7 +209,6 @@ function Carousel(str) {
         this.$circles.find("div").eq(index).addClass(newStyle);
     };
 }
-
 /**
  * 呼吸轮播图
  * @param str carousel容器选择器，通过此选择器应定位唯一的carousel元素
@@ -257,6 +260,10 @@ function CarouselBreath(str) {
         }
         if (index === undefined) {
             index = this.idx === LENGTH - 1 ? this.idx + 1 : 0;
+        }
+        if (fn === undefined) {
+            fn = function () {
+            };
         }
 
         if (this.lock) {
@@ -324,5 +331,149 @@ function CarouselBreath(str) {
             });
         });
     };
+    return carousel;
+}
+/**
+ * 碎片轮播图
+ * @param str carousel容器选择器，通过此选择器应定位唯一的carousel元素
+ */
+function CarouselFragment(str) {
+    let carousel = new Carousel(str);
+    // 当前显示的图片索引
+    carousel.idx = 0;
+    // 锁，为false时禁止进行轮播动画
+    carousel.lock = true;
+    // carousel宽度、高度
+    const CAROUSEL_WIDTH = parseInt(carousel.$carousel.css("width"));
+    const CAROUSEL_HEIGHT = parseInt(carousel.$carousel.css("height"));
+    // 图片数量
+    const LENGTH = carousel.$imgs.length;
+    /**
+     * 重设carousel初始化器
+     * @param cirOldStyle 默认圆点样式
+     * @param cirNewStyle 高亮原点样式
+     */
+    carousel.initCarousel = function (cirOldStyle, cirNewStyle) {
+        // carousel box布局
+        // 宽度为一张图片的宽度，左偏移量为0
+        this.$carouselBox.css({
+            width: CAROUSEL_WIDTH,
+            left: 0,
+        });
+        // 图片布局
+        // 所有图片左偏移量为0，除第一张图片外，其余图片的display值设为none
+        this.$imgs.each(function () {
+            $(this).css("left", 0);
+            if ($(this).index() !== 0) {
+                $(this).css("display", "none");
+            }
+        });
+        // 导入圆点样式
+        this.cirsOldStyle = cirOldStyle === undefined ? "default-cir" : cirOldStyle;
+        this.cirsNewStyle = cirNewStyle === undefined ? "default-highlight-cir" : cirNewStyle;
+        // 碎片容器
+        this.arr = [];
+        for (let i = 0; i < 2; i++) {
+            for (let j = 0; j < 2; j++) {
+                let block = $("<div></div>");
+                block.css({
+                    width: 0,
+                    height: 0,
+                    position: "absolute",
+                    left: j * 240,
+                    top: i * 135,
+
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: (-j * 240) + "px " + (-i * 135) + "px",
+                    backgroundSize: CAROUSEL_WIDTH,
+
+                    display: "none",
+                });
+                this.$carouselBox.prepend(block);
+                this.arr.push(block);
+            }
+        }
+    };
+    /**
+     * 重设carousel移动方法
+     * @param speed 动画持续时间
+     * @param index 要显示的图片索引
+     * @param fn 动画完成后的回调函数
+     */
+    carousel.move = function (speed, index, fn) {
+        if (speed === undefined) {
+            speed = 1000;
+        }
+        if (index === undefined) {
+            index = this.idx === LENGTH - 1 ? this.idx + 1 : 0;
+        }
+        if (fn === undefined) {
+            fn = function () {
+            };
+        }
+        let timer = null;
+        if (this.lock) {
+            this.lock = false;
+            this.arr.forEach(function () {
+                carousel.initFragments(index);
+                carousel.showFragments(speed);
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    console.log("312");
+                    carousel.hideFragments(index);
+                    carousel.lock = true;
+                    carousel.idx = index;
+                    fn();
+                }, speed);
+            });
+        }
+    };
+    /**
+     * 初始化碎片
+     * @param index 要显示的图片的索引
+     */
+    carousel.initFragments = function (index) {
+        // 设置碎片的样式
+        this.arr.forEach(function (v) {
+            let location = carousel.$imgs.eq(index)[0].src;
+            $(v).css("display", "block");
+            $(v).css("backgroundImage", "url(\"" + location + "\")");
+        });
+    };
+    /**
+     * 碎片展开
+     * @param speed 动画持续的时间
+     */
+    carousel.showFragments = function (speed) {
+        // 碎片展开
+        this.arr.forEach(function (v) {
+            $(v).animate({
+                width: 240,
+                height: 135,
+            }, speed - 500);
+        });
+    };
+    /**
+     * 隐藏碎片
+     * @param index 要显示的图片的索引
+     */
+    carousel.hideFragments = function (index) {
+        // 显示对应的图片
+        carousel.$imgs.eq(carousel.idx).css("display", "none");
+        carousel.$imgs.eq(index).css("display", "block");
+        console.log(carousel.arr.length);
+        // 隐藏碎片
+        $.each(carousel.arr, function (i, v) {
+            console.log("123");
+            v.css({
+                border: "solid 2px black",
+                backgroundImage: "none",
+                backgroundColor: "blue",
+                width: "10px",
+                height: "10px",
+            });
+        });
+    };
+
     return carousel;
 }

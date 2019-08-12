@@ -150,6 +150,26 @@
             </div>
         </div>
 
+        <!-- 默认碎片轮播图 -->
+        <div class="carousel-breath" id="carousel4">
+            <div class="carousel-box">
+                <img src="./image/1.jpg" alt="">
+                <img src="./image/2.jpg" alt="">
+                <img src="./image/3.jpg" alt="">
+                <img src="./image/4.jpg" alt="">
+            </div>
+            <div class="carousel-btns">
+                <div class="default-left-btn"></div>
+                <div class="default-right-btn"></div>
+            </div>
+            <div class="carousel-circles">
+                <div class="default-highlight-cir"></div>
+                <div class="default-cir"></div>
+                <div class="default-cir"></div>
+                <div class="default-cir"></div>
+            </div>
+        </div>
+
         <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
         <script src="./js/carousel.js" type="text/javascript"></script>
         <script type="text/javascript">
@@ -173,6 +193,13 @@
             carousel.autoplay(500, 500);
             carousel.initBtns(500);
             carousel.initCirs(500);
+
+            // 默认碎片轮播图
+            carousel = new CarouselFragment("div#carousel4");
+            carousel.initCarousel();
+            // carousel.autoplay(500, 500);
+            // carousel.initBtns(500);
+            // carousel.initCirs(500);
         </script>
     </body>
 </html>
