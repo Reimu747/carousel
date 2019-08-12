@@ -352,8 +352,10 @@ function CarouselFragment(str) {
      * 重设carousel初始化器
      * @param cirOldStyle 默认圆点样式
      * @param cirNewStyle 高亮原点样式
+     * @param row 碎片行数
+     * @param col 碎片列数
      */
-    carousel.initCarousel = function (cirOldStyle, cirNewStyle) {
+    carousel.initCarousel = function (cirOldStyle, cirNewStyle, row, col) {
         // carousel box布局
         // 宽度为一张图片的宽度，左偏移量为0
         this.$carouselBox.css({
@@ -371,20 +373,23 @@ function CarouselFragment(str) {
         // 导入圆点样式
         this.cirsOldStyle = cirOldStyle === undefined ? "default-cir" : cirOldStyle;
         this.cirsNewStyle = cirNewStyle === undefined ? "default-highlight-cir" : cirNewStyle;
+        // 碎片数量，默认2行2列
+        this.col = col === undefined ? 2 : col;
+        this.row = row === undefined ? 2 : row;
         // 碎片容器
         this.arr = [];
-        for (let i = 0; i < 2; i++) {
-            for (let j = 0; j < 2; j++) {
+        for (let i = 0; i < this.row; i++) {
+            for (let j = 0; j < this.col; j++) {
                 let block = $("<div></div>");
                 block.css({
                     width: 0,
                     height: 0,
                     position: "absolute",
-                    left: j * 240,
-                    top: i * 135,
+                    left: j * CAROUSEL_WIDTH / this.col,
+                    top: i * CAROUSEL_HEIGHT / this.row,
 
                     backgroundRepeat: "no-repeat",
-                    backgroundPosition: (-j * 240) + "px " + (-i * 135) + "px",
+                    backgroundPosition: (-j * CAROUSEL_WIDTH / this.col) + "px " + (-i * CAROUSEL_HEIGHT / this.row) + "px",
                     backgroundSize: CAROUSEL_WIDTH,
 
                     display: "none",
@@ -411,22 +416,45 @@ function CarouselFragment(str) {
             fn = function () {
             };
         }
-        let timer = null;
         if (this.lock) {
             this.lock = false;
-            this.arr.forEach(function () {
-                carousel.initFragments(index);
-                carousel.showFragments(speed);
-                clearTimeout(timer);
-                timer = setTimeout(function () {
-                    console.log("312");
-                    carousel.hideFragments(index);
-                    carousel.lock = true;
-                    carousel.idx = index;
-                    fn();
-                }, speed);
-            });
+            carousel.initFragments(index);
+            carousel.showFragments(speed);
+            setTimeout(function () {
+                carousel.hideFragments(index);
+                carousel.lock = true;
+                carousel.idx = index;
+                fn();
+            }, speed);
         }
+    };
+    /**
+     * 重设carousel单次移动方法
+     * @param dire 移动方向，left向左移动，right向右移动
+     * @param speed 动画持续时间
+     */
+    carousel.moveOnce = function (dire, speed) {
+        if (dire === undefined) {
+            dire = "left";
+        }
+        if (speed === undefined) {
+            speed = 1000;
+        }
+
+        // 设置将要展示的图片索引
+        let index = this.idx;
+        if (dire.toLowerCase() === "left") {
+            index = index === LENGTH - 1 ? 0 : index + 1;
+        } else if (dire.toLowerCase() === "right") {
+            index = index === 0 ? LENGTH - 1 : index - 1;
+        } else {
+            throw new Error("dire值错误!");
+        }
+
+        this.move(speed, index, function () {
+            // 动画完成后，重设圆点样式
+            carousel.resetCirs(carousel.cirsOldStyle, carousel.cirsNewStyle, index);
+        });
     };
     /**
      * 初始化碎片
@@ -448,9 +476,9 @@ function CarouselFragment(str) {
         // 碎片展开
         this.arr.forEach(function (v) {
             $(v).animate({
-                width: 240,
-                height: 135,
-            }, speed - 500);
+                width: CAROUSEL_WIDTH / carousel.col,
+                height: CAROUSEL_HEIGHT / carousel.row,
+            }, 300 + Math.random() * (speed - 310));
         });
     };
     /**
@@ -461,16 +489,37 @@ function CarouselFragment(str) {
         // 显示对应的图片
         carousel.$imgs.eq(carousel.idx).css("display", "none");
         carousel.$imgs.eq(index).css("display", "block");
-        console.log(carousel.arr.length);
         // 隐藏碎片
         $.each(carousel.arr, function (i, v) {
-            console.log("123");
             v.css({
-                border: "solid 2px black",
                 backgroundImage: "none",
-                backgroundColor: "blue",
-                width: "10px",
-                height: "10px",
+                width: 0,
+                height: 0,
+            });
+        });
+    };
+    /**
+     * 重设点击圆点事件
+     * @param speed 动画持续时间
+     */
+    carousel.initCirs = function (speed) {
+        if (this.$circles.length === 0) {
+            return;
+        }
+        if (speed === undefined) {
+            speed = 1000;
+        }
+
+        this.$circles.find("div").each(function () {
+            $(this).click(function () {
+                if (carousel.lock) {
+                    let index = $(this).index();
+                    // 点击圆点后轮播，并重设圆点样式
+                    let move = function () {
+                        carousel.resetCirs(carousel.cirsOldStyle, carousel.cirsNewStyle, index);
+                    };
+                    carousel.move(speed, index, move);
+                }
             });
         });
     };
