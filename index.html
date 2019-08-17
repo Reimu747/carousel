@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="./css/common.css" type="text/css">
         <link rel="stylesheet" href="./css/carousel.css" type="text/css">
         <style>
-            div.carousel, div.carousel-breath {
+            div.carousel, div.carousel-breath, div.carousel-fragment {
                 width: 480px;
                 height: 270px;
                 margin: 100px auto 100px;
@@ -151,20 +151,18 @@
         </div>
 
         <!-- 默认碎片轮播图 -->
-        <div class="carousel-breath" id="carousel4">
+        <div class="carousel-fragment" id="carousel4">
             <div class="carousel-box">
-                <img src="./image/1.jpg" alt="">
                 <img src="./image/2.jpg" alt="">
                 <img src="./image/3.jpg" alt="">
-                <img src="./image/4.jpg" alt="">
+                <img src="./image/5.jpg" alt="">
             </div>
             <div class="carousel-btns">
-                <div class="default-left-btn"></div>
-                <div class="default-right-btn"></div>
+                <div class="left-btn-style1"></div>
+                <div class="right-btn-style1"></div>
             </div>
             <div class="carousel-circles">
                 <div class="default-highlight-cir"></div>
-                <div class="default-cir"></div>
                 <div class="default-cir"></div>
                 <div class="default-cir"></div>
             </div>
@@ -196,10 +194,10 @@
 
             // 默认碎片轮播图
             carousel = new CarouselFragment("div#carousel4");
-            carousel.initCarousel();
-            // carousel.autoplay(500, 500);
-            // carousel.initBtns(500);
-            // carousel.initCirs(500);
+            carousel.initCarousel(undefined, undefined, 3, 6);
+            carousel.autoplay(500, 2000);
+            carousel.initBtns(2000);
+            carousel.initCirs(2000);
         </script>
     </body>
 </html>

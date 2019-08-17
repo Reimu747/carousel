@@ -1,29 +1,29 @@
 /* 滚动轮播图、呼吸轮播图默认样式 */
-div.carousel, div.carousel-breath {
+div.carousel, div.carousel-breath, div.carousel-fragment {
     position: relative;
     overflow: hidden;
 }
 
-div.carousel > div.carousel-box, div.carousel-breath > div.carousel-box {
+div.carousel-box {
     position: absolute;
 
     height: 100%;
     top: 0;
 }
 
-div.carousel > div.carousel-box > img, div.carousel-breath > div.carousel-box > img {
+div.carousel-box > img {
     height: 100%;
     position: absolute;
     top: 0;
     z-index: -1;
 }
 
-div.carousel > div.carousel-box > img:nth-child(1), div.carousel-breath > div.carousel-box > img:nth-child(1) {
+div.carousel-box > img:nth-child(1) {
     z-index: auto;
 }
 
 /* btns */
-div.carousel > div.carousel-btns, div.carousel-breath > div.carousel-btns {
+div.carousel-btns {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -64,7 +64,7 @@ div.carousel > div.carousel-btns, div.carousel-breath > div.carousel-btns {
 }
 
 /* circles */
-div.carousel > div.carousel-circles, div.carousel-breath > div.carousel-circles {
+div.carousel-circles {
     width: 90px;
     height: 10px;
 
